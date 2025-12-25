@@ -1,26 +1,31 @@
-namespace chip8 {
-    unsigned char memory[4096];
-    unsigned char gfx[64 * 32]; // screen 1 on, 0 off
-    unsigned char V[16]; // general purpose registers
-    unsigned char key[16];
-    unsigned short stack[16];
-
-    unsigned char delay_timer;
-    unsigned char sound_timer;
+#include <string>
+class chip8 {
+    public:
+        void initialize();
+        void loadGame(std::string s);
+        void emulateCycle();
+        void setKeys();
+        int  drawFlag();
     
-    unsigned short opcode; // current opcode
-    unsigned short I;  // index from 0x000 to 0xFFF
-    unsigned short pc; // prog counter from 0x000 to 0xFFF
-    unsigned short sp; 
+    private:
+        unsigned char memory[4096];
+        unsigned char gfx[64 * 32]; // screen 1 on, 0 off
+        unsigned char V[16]; // general purpose registers
+        unsigned char key[16];
+        unsigned short stack[16];
 
-    /*
-    0x000-0x1FF - Chip 8 interpreter (contains font set in emu)
-    0x050-0x0A0 - Used for the built in 4x5 pixel font set (0-F)
-    0x200-0xFFF - Program ROM and work RAM
-    */
+        unsigned char delay_timer;
+        unsigned char sound_timer;
+        
+        unsigned short opcode; // current opcode
+        unsigned short I;  // index from 0x000 to 0xFFF
+        unsigned short pc; // prog counter from 0x000 to 0xFFF
+        unsigned short sp; 
 
-    
+        /*
+        0x000-0x1FF - Chip 8 interpreter (contains font set in emu)
+        0x050-0x0A0 - Used for the built in 4x5 pixel font set (0-F)
+        0x200-0xFFF - Program ROM and work RAM
+        */
 
-
-
-}
+};
