@@ -1,6 +1,7 @@
 #include <string>
 #include <array>
 
+
 class chip8 {
     public:
         void initialize();
@@ -29,8 +30,10 @@ class chip8 {
         0x050-0x0A0 - Used for the built in 4x5 pixel font set (0-F)
         0x200-0xFFF - Program ROM and work RAM
         */
+        static constexpr int fontOffset = 0x50;
+        static constexpr int programOffset = 0x200;
 
-        unsigned char chip8_fontset[80] =
+        std::array<unsigned char, 80> chip8_fontset =
         { 
         0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
         0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -49,5 +52,4 @@ class chip8 {
         0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
         };
-
 };
