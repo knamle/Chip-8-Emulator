@@ -1,4 +1,7 @@
 #include <string>
+#include <array>
+
+
 class chip8 {
     public:
         void initialize();
@@ -8,11 +11,11 @@ class chip8 {
         int  drawFlag();
     
     private:
-        unsigned char memory[4096];
-        unsigned char gfx[64 * 32]; // screen 1 on, 0 off
-        unsigned char V[16]; // general purpose registers
-        unsigned char key[16];
-        unsigned short stack[16];
+        std::array<unsigned char, 4096> memory;
+        std::array<unsigned char, 64 * 32> gfx;
+        std::array<unsigned char, 16> V;
+        std::array<unsigned char, 16> key;
+        std::array<unsigned short, 16> stack;
 
         unsigned char delay_timer;
         unsigned char sound_timer;
@@ -27,5 +30,26 @@ class chip8 {
         0x050-0x0A0 - Used for the built in 4x5 pixel font set (0-F)
         0x200-0xFFF - Program ROM and work RAM
         */
+        static constexpr int fontOffset = 0x50;
+        static constexpr int programOffset = 0x200;
 
+        std::array<unsigned char, 80> chip8_fontset =
+        { 
+        0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+        0x20, 0x60, 0x20, 0x20, 0x70, // 1
+        0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+        0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+        0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+        0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+        0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+        0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+        0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+        0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+        0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+        0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+        0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+        0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+        0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+        0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+        };
 };
