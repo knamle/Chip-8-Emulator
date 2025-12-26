@@ -1,4 +1,6 @@
 #include <string>
+#include <array>
+
 class chip8 {
     public:
         void initialize();
@@ -8,11 +10,11 @@ class chip8 {
         int  drawFlag();
     
     private:
-        unsigned char memory[4096];
-        unsigned char gfx[64 * 32]; // screen 1 on, 0 off
-        unsigned char V[16]; // general purpose registers
-        unsigned char key[16];
-        unsigned short stack[16];
+        std::array<unsigned char, 4096> memory;
+        std::array<unsigned char, 64 * 32> gfx;
+        std::array<unsigned char, 16> V;
+        std::array<unsigned char, 16> key;
+        std::array<unsigned short, 16> stack;
 
         unsigned char delay_timer;
         unsigned char sound_timer;

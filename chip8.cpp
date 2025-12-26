@@ -10,13 +10,11 @@ void chip8::initialize() {
     
     // Clear stack
     // Clear registers V0-VF
-    for (int i = 0; i < 16; ++i) {
-        stack[i] = 0;
-        V[i] = 0;
-    }
+    stack.fill(0);
+    V.fill(0);
 
     // Clear memory
-    for (int i = 0; i < 4096; ++i) memory[i] = 0; 
+    memory.fill(0);
     
     // Load fontset
     for(int i = 0; i < 80; ++i) memory[i] = chip8_fontset[i];		
