@@ -67,4 +67,6 @@ void chip8::loadGame(std::string s) {
 
 void chip8::setKeys() {}
 
-int  chip8::drawFlag() {}
+int  chip8::drawFlag() {
+    return 0;
+}
