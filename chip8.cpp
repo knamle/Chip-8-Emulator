@@ -49,22 +49,30 @@ void chip8::emulateCycle() {
 }
 
 void chip8::loadGame(std::string s) {
-    std::ifstream stream(s, std::ios::binary | std::ios::ate);
-    const int programSize = stream.tellg();
-    stream.seekg(0);
+    try {
+        std::ifstream stream(s, std::ios::binary | std::ios::ate);
 
-    if (programSize > 3584) {
-        std::cout << "Program too big bro, try a different one";
-        return;
+        const int programSize = stream.tellg();
+        stream.seekg(0);
+
+        if (programSize > 3584) {
+            std::cout << "Program too big bro, try a different one";
+            return;
+        }
+
+        std::vector<char> buffer(programSize);
+
+        stream.read(buffer.data(), programSize);
+
+        for(int i = 0; i < programSize; ++i) memory[i + programOffset] = buffer[i];
     }
-
-    std::vector<char> buffer(programSize);
-
-    stream.read(buffer.data(), programSize);
-
-    for(int i = 0; i < programSize; ++i) memory[i + programOffset] = buffer[i];
+    catch (const std::exception& e) {
+        std::cerr << e.what() << "\n";
+    }
 }
 
 void chip8::setKeys() {}
 
-int  chip8::drawFlag() {}
+int  chip8::drawFlag() {
+    return 1;
+}

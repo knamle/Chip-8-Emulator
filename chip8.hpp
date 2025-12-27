@@ -9,10 +9,11 @@ class chip8 {
         void emulateCycle();
         void setKeys();
         int  drawFlag();
+        inline 
+        static std::array<unsigned char, 64 * 32> gfx;
     
     private:
         std::array<unsigned char, 4096> memory;
-        std::array<unsigned char, 64 * 32> gfx;
         std::array<unsigned char, 16> V;
         std::array<unsigned char, 16> key;
         std::array<unsigned short, 16> stack;
