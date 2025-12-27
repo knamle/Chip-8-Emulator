@@ -1,22 +1,27 @@
 #include <string>
 #include <array>
-
-
 class chip8 {
     public:
         void initialize();
         void loadGame(std::string s);
         void emulateCycle();
         void setKeys();
-        int  drawFlag();
-        inline 
-        static std::array<unsigned char, 64 * 32> gfx;
-    
+        bool drawFlag();
+        
+        inline static std::array<unsigned char, 64 * 32> gfx;
+        
     private:
+        void clearScreen ();
+        void op00XX (unsigned short op);
+        
+        bool needToRedraw = false;
+    
         std::array<unsigned char, 4096> memory;
         std::array<unsigned char, 16> V;
         std::array<unsigned char, 16> key;
         std::array<unsigned short, 16> stack;
+
+        using Fn = void(chip8::*)(unsigned short op);
 
         unsigned char delay_timer;
         unsigned char sound_timer;

@@ -66,6 +66,7 @@ void drawGraphics() {
         }
     }
     SDL_RenderPresent(renderer);
+    // after done drawing set needtoredraw = false?
 }
 
 int main (int argc, char **argv) {

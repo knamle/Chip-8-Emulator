@@ -9,7 +9,8 @@ void chip8::initialize() {
     I      = 0;      // Reset index register
     sp     = 0;      // Reset stack pointer
     
-    // TODO: Clear display	
+    //Clear display	
+    clearScreen();
     
     // Clear stack
     // Clear registers V0-VF
@@ -27,8 +28,10 @@ void chip8::initialize() {
     sound_timer = 0;
 
     // init function pointers
-    using Fn = void(*)();
-    Fn table[16]; // 0xxx - Fxxx
+    Fn table[16] = {
+        &chip8::op00XX,
+        
+    }; // 0xxx - Fxxx
 }
 
 void chip8::emulateCycle() {
@@ -73,6 +76,27 @@ void chip8::loadGame(std::string s) {
 
 void chip8::setKeys() {}
 
-int  chip8::drawFlag() {
-    return 1;
+bool chip8::drawFlag() {
+    return needToRedraw;
+}
+
+void chip8::clearScreen() {
+    chip8::gfx.fill(0);
+    needToRedraw = true;
+}
+
+void chip8::op00XX (unsigned short op){
+    unsigned char lsbyte = op & 0x00ff;
+
+    switch (lsbyte) {
+        case 0xe0:
+            clearScreen();
+            pc += 2;
+            break;
+            
+        case 0xee:
+            sp--;
+            pc = stack[sp];
+            break;
+    }
 }
