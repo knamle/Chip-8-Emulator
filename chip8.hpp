@@ -20,15 +20,7 @@ class chip8 {
         void op5XY0 (uint16_t op);
         void op6XNN (uint16_t op);
         void op7XNN(uint16_t op);
-        void op8XY0(uint16_t op);
-        void op8XY1(uint16_t op);
-        void op8XY2(uint16_t op);
-        void op8XY3(uint16_t op);
-        void op8XY4(uint16_t op);
-        void op8XY5(uint16_t op);
-        void op8XY6(uint16_t op);
-        void op8XY7(uint16_t op);
-        void op8XYE(uint16_t op);
+        void op8XYN(uint16_t op);
         void op9XY0(uint16_t op);
         void opANNN(uint16_t op); 
         void opBNNN(uint16_t op); 

@@ -155,72 +155,60 @@ void chip8::op7XNN(uint16_t op) {
     V[x] = (V[x] + nn); 
 }
 
-void chip8::op8XY0(uint16_t op) {
-    const uint8_t x = (op >> 8) & 0x0F;
-    const uint8_t y = (op >> 4) & 0x0F;
-    V[x] = V[y];
-}
-
-void chip8::op8XY1(uint16_t op) {
-    const uint8_t x = (op >> 8) & 0x0F;
-    const uint8_t y = (op >> 4) & 0x0F;
-    V[x] |= V[y];
-}
-
-void chip8::op8XY2(uint16_t op) {
-    const uint8_t x = (op >> 8) & 0x0F;
-    const uint8_t y = (op >> 4) & 0x0F;
-    V[x] &= V[y];
-}
-
-void chip8::op8XY3(uint16_t op) {
-    const uint8_t x = (op >> 8) & 0x0F;
-    const uint8_t y = (op >> 4) & 0x0F;
-    V[x] ^= V[y];
-}
-
-void chip8::op8XY4(uint16_t op) {
+void chip8::op8XYN(uint16_t op) {
     const uint8_t x = (op >> 8) & 0x0F;
     const uint8_t y = (op >> 4) & 0x0F;
 
-    const uint16_t checkForOverflow = (V[x] + V[y]) & 0xff00;
+    switch (op & 0xF) {
+        case 0x0: 
+            V[x] = V[y];
+            break;
+
+        case 0x1: 
+            V[x] |= V[y];
+            break;
+
+        case 0x2: 
+            V[x] &= V[y];
+            break;
+
+        case 0x3: 
+            V[x] ^= V[y];
+            break;
+
+        case 0x4: { 
+            const uint16_t checkForOverflow = (V[x] + V[y]) & 0xff00;
     
-    V[x] += V[y];
+            checkForOverflow ? V[0xf] = 1 : V[0xf] = 0;
+            V[x] += V[y];
+            break;
+        }
 
-    checkForOverflow ? V[0xf] = 1 : V[0xf] = 0;
-}
-
-void chip8::op8XY5(uint16_t op) {
-    const uint8_t x = (op >> 8) & 0x0F;
-    const uint8_t y = (op >> 4) & 0x0F;
-
-    const bool checkForUnderflow = V[x] < V[y];
+        case 0x5: 
+            const bool checkForUnderflow = V[x] < V[y];
+            checkForUnderflow ? V[0xf] = 0 : V[0xf] = 1;
     
-    V[x] -= V[y];
+            V[x] -= V[y];
+            break;
 
-    checkForUnderflow ? V[0xf] = 0 : V[0xf] = 1;
-}
+        case 0x6: 
+            V[0xF] = V[x] & 0x1;
+            V[x] >>= 1;
+            break;
 
-void chip8::op8XY6(uint16_t op) {
-    const uint8_t x = (op >> 8) & 0x0F;
+        case 0x7: 
+            V[0xF] = (V[y] >= V[x]);
+            V[x]   = V[y] - V[x];
+            break;
 
-    V[0xf] = V[x] & 0x1;
-    V[x] >>= 1;
-}
+        case 0xE: 
+            V[0xF] = (V[x] >> 7) & 0x01;
+            V[x] <<= 1;
+            break;
 
-void chip8::op8XY7(uint16_t op) {
-    const uint8_t x = (op >> 8) & 0x0F;
-    const uint8_t y = (op >> 4) & 0x0F;
-
-    V[0xf] = (V[y] >= V[x]);
-    V[x] = V[y] - V[x];
-}
-
-void chip8::op8XYE(uint16_t op) {
-    const uint8_t x = (op >> 8) & 0x0F;
-
-    V[0xf] = (V[x] >> 7);
-    V[x] <<= 1;
+        default:
+            break;
+    }
 }
 
 void chip8::op9XY0(uint16_t op) {
