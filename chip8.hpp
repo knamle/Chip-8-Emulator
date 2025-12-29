@@ -25,6 +25,9 @@ class chip8 {
         void opANNN(uint16_t op); 
         void opBNNN(uint16_t op); 
         void opCXNN(uint16_t op); 
+        void opDXYN(uint16_t op); 
+        void opEXNN(uint16_t op); 
+        void opFXNN(uint16_t op); 
 
         bool needToRedraw = false;
     

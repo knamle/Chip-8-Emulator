@@ -234,3 +234,55 @@ void chip8::opCXNN(uint16_t op) {
     V[x] = (op & 0x0FF) & randomNum;
 }
 
+void chip8::opDXYN(uint16_t op) {
+    uint8_t x = V[(opcode & 0x0F00) >> 8];
+    uint8_t y = V[(opcode & 0x00F0) >> 4];
+    uint8_t height = opcode & 0x000F;
+    uint8_t pixel;
+
+    V[0xf] = 0;
+    for (int yline = 0; yline < height; yline++) {
+        pixel = memory[I + yline];
+        
+        for(int xline = 0; xline < 8; xline++) {
+            if((pixel & (0x80 >> xline)) != 0) {
+                if(gfx[(x + xline + ((y + yline) * 64))] == 1) V[0xF] = 1;                                 
+                
+                gfx[x + xline + ((y + yline) * 64)] ^= 1;
+            }
+        }
+    }
+    needToRedraw = true;
+}
+
+void chip8::opEXNN(uint16_t op) {
+    uint8_t x = V[(opcode & 0x0F00) >> 8];
+    uint8_t nn = op & 0xff;
+
+    uint8_t keyIndex = V[x] & 0xf;
+
+    switch(nn) {
+        case 0x9e:
+            if (key[keyIndex] != 0) pc += 2;
+            break;
+
+        case 0xa1:
+            if (key[keyIndex] == 0) pc += 2;
+            break;
+    }
+}
+
+void chip8::opFXNN(uint16_t op) {
+    uint8_t x = V[(opcode & 0x0F00) >> 8];
+    uint8_t nn = op & 0xff;
+
+    switch (nn) {
+        case 0x07:
+            V[x] = delay_timer;
+            break;
+
+        case 0x0a:
+            //TODO
+    }
+
+}
