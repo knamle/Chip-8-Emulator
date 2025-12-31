@@ -35,6 +35,20 @@ void chip8::initialize() {
     table = {
         &chip8::op00XX,
         &chip8::op1NNN,
+        &chip8::op2NNN, 
+        &chip8::op3XNN, 
+        &chip8::op4XNN, 
+        &chip8::op5XY0, 
+        &chip8::op6XNN, 
+        &chip8::op7XNN, 
+        &chip8::op8XYN, 
+        &chip8::op9XY0, 
+        &chip8::opANNN, 
+        &chip8::opBNNN, 
+        &chip8::opCXNN, 
+        &chip8::opDXYN, 
+        &chip8::opEXNN, 
+        &chip8::opFXNN  
     }; // 0xxx - Fxxx
 }
 
@@ -287,7 +301,7 @@ void chip8::opEXNN(uint16_t op) {
 }
 
 void chip8::opFXNN(uint16_t op) {
-    uint8_t x = V[(opcode & 0x0F00) >> 8];
+    uint8_t x = V[(op & 0x0F00) >> 8];
     uint8_t nn = op & 0xff;
 
     switch (nn) {
@@ -298,9 +312,48 @@ void chip8::opFXNN(uint16_t op) {
         case 0x0a:
             waitingForKey = true;
             waitingReg = x;
-
             pc -= 2;
             break;
+
+        case 0x15: 
+            delay_timer = V[x];
+            break;
+
+        case 0x18: 
+            sound_timer = V[x];
+            break;
+
+        case 0x1E: {
+            I += V[x];
+            break;
+        }
+
+        case 0x29: {
+            I = (op & 0xf) * 5 + fontOffset;
+            break;
+        }
+
+        case 0x33: {
+            memory[I]     = V[(opcode & 0x0F00) >> 8] / 100;
+            memory[I + 1] = (V[(opcode & 0x0F00) >> 8] / 10) % 10;
+            memory[I + 2] = (V[(opcode & 0x0F00) >> 8] % 100) % 10;
+            break;
+        }
+
+        case 0x55: {
+            for (uint8_t j = 0; j <= x; ++j) {
+                memory[I + j] = V[j];
+            }
+            break;
+        }
+
+        case 0x65: {
+            for (uint8_t j = 0; j <= x; ++j) {
+                V[j] = memory[I + j];
+            }
+            break;
+        }
+
     }
 
 }

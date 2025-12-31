@@ -9,8 +9,6 @@ class chip8 {
         bool drawFlag();
         
         inline static std::array<uint8_t, 64 * 32> gfx;
-        inline static std::array<uint8_t, 16> key;
-        inline static std::array<uint8_t, 16> oldKey;
         
     private:
         void clearScreen ();
@@ -36,6 +34,7 @@ class chip8 {
     
         std::array<uint8_t, 4096> memory;
         std::array<uint8_t, 16> V;
+        std::array<uint8_t, 16> key;
         std::array<uint16_t, 16> stack;
 
         using Fn = void(chip8::*)(uint16_t op);
@@ -50,7 +49,6 @@ class chip8 {
         uint16_t I;  // index from 0x000 to 0xFFF
         uint16_t pc; // prog counter from 0x000 to 0xFFF
         uint16_t sp; 
-
 
         /*
         0x000-0x1FF - Chip 8 interpreter (contains font set in emu)

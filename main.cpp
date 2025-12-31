@@ -98,8 +98,6 @@ void mapSDLKeyToChip8(SDL_Keycode key, uint8_t &chip8key) {
     }
 }
 
-
-
 int main (int argc, char **argv) {
     setupGraphics();
     //setupInput();
@@ -116,11 +114,9 @@ int main (int argc, char **argv) {
         while( SDL_PollEvent( &e ) ){ 
             uint8_t chip8key;
             mapSDLKeyToChip8(e.key.keysym.sym, chip8key);
-            //if( e.type == SDL_QUIT ) quit = true; 
-            // seg fault while removing keys and jsut letting it run, also seg fault when commenting out loadgame
+
             switch( e.type ) {
                 case SDL_KEYDOWN:
-                    //if (e.key.keysym.sym == SDLK_1) printf("registered 1 \n");
                     printf( "Key press detected\n" );
                     if (chip8key != 0xff) myChip8.setKeys(chip8key, false);
                     break;
@@ -146,8 +142,6 @@ int main (int argc, char **argv) {
             chip8::gfx[1000] = 1;
 
             if (myChip8.drawFlag()) drawGraphics();
-
-            //chip8::oldKey = chip8::key;
     }
 
     //Destroy window
