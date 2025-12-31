@@ -5,10 +5,12 @@ class chip8 {
         void initialize();
         void loadGame(std::string s);
         void emulateCycle();
-        void setKeys();
+        void setKeys(uint8_t chip8key, bool keyUp);
         bool drawFlag();
         
         inline static std::array<uint8_t, 64 * 32> gfx;
+        inline static std::array<uint8_t, 16> key;
+        inline static std::array<uint8_t, 16> oldKey;
         
     private:
         void clearScreen ();
@@ -30,10 +32,10 @@ class chip8 {
         void opFXNN(uint16_t op); 
 
         bool needToRedraw = false;
+        bool waitingForKey = false;
     
         std::array<uint8_t, 4096> memory;
         std::array<uint8_t, 16> V;
-        std::array<uint8_t, 16> key;
         std::array<uint16_t, 16> stack;
 
         using Fn = void(chip8::*)(uint16_t op);
@@ -42,11 +44,13 @@ class chip8 {
 
         uint8_t delay_timer;
         uint8_t sound_timer;
+        uint8_t waitingReg; 
         
         uint16_t opcode; // current opcode
         uint16_t I;  // index from 0x000 to 0xFFF
         uint16_t pc; // prog counter from 0x000 to 0xFFF
         uint16_t sp; 
+
 
         /*
         0x000-0x1FF - Chip 8 interpreter (contains font set in emu)

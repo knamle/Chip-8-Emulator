@@ -39,6 +39,16 @@ void chip8::initialize() {
 }
 
 void chip8::emulateCycle() {
+    // Update timers
+    if(delay_timer > 0) --delay_timer;
+    
+    if(sound_timer > 0) {
+        if(sound_timer == 1) printf("BEEP!\n");
+        --sound_timer;
+    } 
+
+    if (waitingForKey) return;
+
     // Fetch Opcode
     opcode = memory[pc] << 8 | memory[pc + 1];
     pc += 2;
@@ -49,18 +59,10 @@ void chip8::emulateCycle() {
     // Execute Opcode
     Fn fn = table[opMSB_4bits];
     (this->*fn)(opcode);
-
-    // Update timers
-    if(delay_timer > 0) --delay_timer;
-    
-    if(sound_timer > 0) {
-        if(sound_timer == 1) printf("BEEP!\n");
-        --sound_timer;
-    } 
 }
 
 void chip8::loadGame(std::string s) {
-    try {
+    /*try {
         std::ifstream stream(s, std::ios::binary | std::ios::ate);
 
         const int programSize = stream.tellg();
@@ -79,10 +81,17 @@ void chip8::loadGame(std::string s) {
     }
     catch (const std::exception& e) {
         std::cerr << e.what() << "\n";
-    }
+    }*/
 }
 
-void chip8::setKeys() {}
+void chip8::setKeys(uint8_t chip8key, bool keyUp) {
+    if (waitingForKey) {
+        V[waitingReg] = chip8key;
+        waitingForKey = false;
+    }
+    
+    keyUp ? key[chip8key] = 1 : key[chip8key] = 0;
+}
 
 bool chip8::drawFlag() {
     return needToRedraw;
@@ -184,30 +193,35 @@ void chip8::op8XYN(uint16_t op) {
             break;
         }
 
-        case 0x5: 
+        case 0x5: {
             const bool checkForUnderflow = V[x] < V[y];
             checkForUnderflow ? V[0xf] = 0 : V[0xf] = 1;
     
             V[x] -= V[y];
             break;
+        }
 
-        case 0x6: 
+        case 0x6: {
             V[0xF] = V[x] & 0x1;
             V[x] >>= 1;
             break;
+        }
 
-        case 0x7: 
+        case 0x7: {
             V[0xF] = (V[y] >= V[x]);
             V[x]   = V[y] - V[x];
             break;
+        }
 
-        case 0xE: 
+        case 0xE: {
             V[0xF] = (V[x] >> 7) & 0x01;
             V[x] <<= 1;
             break;
+        }
 
-        default:
+        default: {
             break;
+        }
     }
 }
 
@@ -282,7 +296,11 @@ void chip8::opFXNN(uint16_t op) {
             break;
 
         case 0x0a:
-            //TODO
+            waitingForKey = true;
+            waitingReg = x;
+
+            pc -= 2;
+            break;
     }
 
 }
