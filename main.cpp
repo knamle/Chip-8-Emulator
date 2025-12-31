@@ -110,6 +110,9 @@ int main (int argc, char **argv) {
     bool quit = false; 
     int i = 0;
 
+    chip8::gfx[50] = 1;
+    chip8::gfx[1000] = 1;
+
     while( quit == false ){ 
         while( SDL_PollEvent( &e ) ){ 
             uint8_t chip8key;
@@ -137,9 +140,6 @@ int main (int argc, char **argv) {
         
         }
             myChip8.emulateCycle();
-
-            chip8::gfx[50] = 1;
-            chip8::gfx[1000] = 1;
 
             if (myChip8.drawFlag()) drawGraphics();
     }
