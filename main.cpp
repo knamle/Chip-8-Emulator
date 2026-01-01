@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <algorithm>
+#include <chrono>
+
 #include "chip8.hpp"
 
 chip8 myChip8;
