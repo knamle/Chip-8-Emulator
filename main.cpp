@@ -92,9 +92,7 @@ void mapSDLKeyToChip8(SDL_Keycode key, uint8_t &chip8key) {
         case SDLK_c: chip8key = 0xB; break;
         case SDLK_v: chip8key = 0xF; break;
 
-        default:
-            chip8key = 0xFF;
-            break;
+        default: chip8key = 0xFF; break;
     }
 }
 
@@ -108,12 +106,22 @@ int main (int argc, char **argv) {
 
     SDL_Event e; 
     bool quit = false; 
-    int i = 0;
+    //int i = 0;
 
     chip8::gfx[50] = 1;
     chip8::gfx[1000] = 1;
 
-    while( quit == false ){ 
+    using clock = std::chrono::steady_clock;
+    const double OPS_PER_SEC = 60;
+    const auto STEP = std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+        std::chrono::duration<double>(1.0 / OPS_PER_SEC)
+    );
+
+    auto last = clock::now();
+
+    while( quit == false ){
+        auto now = clock::now();
+
         while( SDL_PollEvent( &e ) ){ 
             uint8_t chip8key;
             mapSDLKeyToChip8(e.key.keysym.sym, chip8key);
@@ -137,11 +145,14 @@ int main (int argc, char **argv) {
                 default:
                     break;
             }
-        
         }
+
+        if (now - last >= STEP) {
             myChip8.emulateCycle();
+            last += STEP;
 
             if (myChip8.drawFlag()) drawGraphics();
+        }
     }
 
     //Destroy window
