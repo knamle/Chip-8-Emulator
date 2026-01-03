@@ -63,13 +63,14 @@ void drawGraphics() {
 
     for (int i=0; i<32; ++i) {
         for (int j=0; j<64; ++j) {
-            if (chip8::gfx[j * 32 + i]) {
+            if (chip8::gfx[i * 64 + j]) {
                 SDL_RenderDrawPoint(renderer, j, i);
             }
         }
     }
     SDL_RenderPresent(renderer);
-    // after done drawing set needtoredraw = false?
+    
+    myChip8.setDrawFlag(false);
 }
 
 void mapSDLKeyToChip8(SDL_Keycode key, uint8_t &chip8key) {
@@ -100,18 +101,13 @@ void mapSDLKeyToChip8(SDL_Keycode key, uint8_t &chip8key) {
 
 int main (int argc, char **argv) {
     setupGraphics();
-    //setupInput();
 
     myChip8.initialize();
 
-    myChip8.loadGame("pong");
+    myChip8.loadGame("rom/tapeworm.ch8");
 
     SDL_Event e; 
     bool quit = false; 
-    //int i = 0;
-
-    chip8::gfx[50] = 1;
-    chip8::gfx[1000] = 1;
 
     using clock = std::chrono::steady_clock;
     const double OPS_PER_SEC = 60;
@@ -130,13 +126,10 @@ int main (int argc, char **argv) {
 
             switch( e.type ) {
                 case SDL_KEYDOWN:
-                    printf( "Key press detected\n" );
                     if (chip8key != 0xff) myChip8.setKeys(chip8key, false);
                     break;
 
                 case SDL_KEYUP:
-                    printf( "Key release detected\n" );
-
                     if (chip8key != 0xff) myChip8.setKeys(chip8key, true);
                     break;
 

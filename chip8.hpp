@@ -6,6 +6,7 @@ class chip8 {
         void loadGame(std::string s);
         void emulateCycle();
         void setKeys(uint8_t chip8key, bool keyUp);
+        void setDrawFlag(bool redraw);
         bool drawFlag();
         
         inline static std::array<uint8_t, 64 * 32> gfx;
