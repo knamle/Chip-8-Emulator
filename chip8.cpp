@@ -18,8 +18,10 @@ void chip8::initialize() {
     
     // Clear stack
     // Clear registers V0-VF
+    // Clear keys
     stack.fill(0);
     V.fill(0);
+    key.fill(0);
 
     // Clear memory
     memory.fill(0);
@@ -69,14 +71,15 @@ void chip8::emulateCycle() {
 
     // Decode Opcode
     uint8_t opMSB_4bits = opcode >> 12;
-    
+    std::cout << std::hex << "opcode:" << (opcode) << "\n"; 
+ 
     // Execute Opcode
     Fn fn = table[opMSB_4bits];
     (this->*fn)(opcode);
 }
 
 void chip8::loadGame(std::string s) {
-    /*try {
+    try {
         std::ifstream stream(s, std::ios::binary | std::ios::ate);
 
         const int programSize = stream.tellg();
@@ -95,25 +98,35 @@ void chip8::loadGame(std::string s) {
     }
     catch (const std::exception& e) {
         std::cerr << e.what() << "\n";
-    }*/
+    }
 }
 
-void chip8::setKeys(uint8_t chip8key, bool keyUp) {
-    if (waitingForKey) {
+void chip8::setKeys(uint8_t chip8key, bool isDown) {
+    if (chip8key == 0xff) return;
+
+    std::cout << "chip8key=" << std::hex << int(chip8key)
+          << " keyUp=" << isDown
+          << " waiting=" << waitingForKey << "\n";
+    
+    if (waitingForKey && isDown) {
         V[waitingReg] = chip8key;
         waitingForKey = false;
     }
     
-    keyUp ? key[chip8key] = 1 : key[chip8key] = 0;
+    isDown ? key[chip8key] = 1 : key[chip8key] = 0;
 }
 
 bool chip8::drawFlag() {
     return needToRedraw;
 }
 
+void chip8::setDrawFlag(bool redraw) {
+    needToRedraw = redraw;
+}
+
 void chip8::clearScreen() {
     chip8::gfx.fill(0);
-    needToRedraw = true;
+    setDrawFlag(true);
 }
 
 void chip8::op00XX (uint16_t op){
@@ -280,11 +293,11 @@ void chip8::opDXYN(uint16_t op) {
             }
         }
     }
-    needToRedraw = true;
+    setDrawFlag(true);
 }
 
 void chip8::opEXNN(uint16_t op) {
-    uint8_t x = V[(opcode & 0x0F00) >> 8];
+    uint8_t x = (op >> 8) & 0x0F;
     uint8_t nn = op & 0xff;
 
     uint8_t keyIndex = V[x] & 0xf;
@@ -301,7 +314,7 @@ void chip8::opEXNN(uint16_t op) {
 }
 
 void chip8::opFXNN(uint16_t op) {
-    uint8_t x = V[(op & 0x0F00) >> 8];
+    uint8_t x = (op & 0x0F00) >> 8;
     uint8_t nn = op & 0xff;
 
     switch (nn) {
@@ -312,7 +325,6 @@ void chip8::opFXNN(uint16_t op) {
         case 0x0a:
             waitingForKey = true;
             waitingReg = x;
-            pc -= 2;
             break;
 
         case 0x15: 
@@ -342,8 +354,9 @@ void chip8::opFXNN(uint16_t op) {
 
         case 0x55: {
             for (uint8_t j = 0; j <= x; ++j) {
-                memory[I + j] = V[j];
+                memory[I + j] = V[j]; 
             }
+            I = I + x + 1;
             break;
         }
 
@@ -351,6 +364,8 @@ void chip8::opFXNN(uint16_t op) {
             for (uint8_t j = 0; j <= x; ++j) {
                 V[j] = memory[I + j];
             }
+            I = I + x + 1;
+            
             break;
         }
 
