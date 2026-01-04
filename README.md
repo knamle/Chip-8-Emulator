@@ -12,4 +12,4 @@ https://en.wikipedia.org/wiki/CHIP-8#Opcode_table
 https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
 ressources
 
-
+work on setting up make/cmake for portability between OS'
