@@ -104,7 +104,7 @@ int main (int argc, char **argv) {
 
     myChip8.initialize();
 
-    myChip8.loadGame("rom/tapeworm.ch8");
+    myChip8.loadGame("rom/Soccer.ch8");
 
     SDL_Event e; 
     bool quit = false; 
@@ -126,11 +126,11 @@ int main (int argc, char **argv) {
 
             switch( e.type ) {
                 case SDL_KEYDOWN:
-                    if (chip8key != 0xff) myChip8.setKeys(chip8key, false);
+                    if (chip8key != 0xff) myChip8.setKeys(chip8key, true);
                     break;
 
                 case SDL_KEYUP:
-                    if (chip8key != 0xff) myChip8.setKeys(chip8key, true);
+                    if (chip8key != 0xff) myChip8.setKeys(chip8key, false);
                     break;
 
                 case SDL_QUIT:

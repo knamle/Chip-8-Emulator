@@ -18,8 +18,10 @@ void chip8::initialize() {
     
     // Clear stack
     // Clear registers V0-VF
+    // Clear keys
     stack.fill(0);
     V.fill(0);
+    key.fill(0);
 
     // Clear memory
     memory.fill(0);
@@ -99,13 +101,19 @@ void chip8::loadGame(std::string s) {
     }
 }
 
-void chip8::setKeys(uint8_t chip8key, bool keyUp) {
-    if (waitingForKey) {
+void chip8::setKeys(uint8_t chip8key, bool isDown) {
+    if (chip8key == 0xff) return;
+
+    std::cout << "chip8key=" << std::hex << int(chip8key)
+          << " keyUp=" << isDown
+          << " waiting=" << waitingForKey << "\n";
+    
+    if (waitingForKey && isDown) {
         V[waitingReg] = chip8key;
         waitingForKey = false;
     }
     
-    keyUp ? key[chip8key] = 1 : key[chip8key] = 0;
+    isDown ? key[chip8key] = 1 : key[chip8key] = 0;
 }
 
 bool chip8::drawFlag() {
@@ -317,7 +325,6 @@ void chip8::opFXNN(uint16_t op) {
         case 0x0a:
             waitingForKey = true;
             waitingReg = x;
-            pc -= 2;
             break;
 
         case 0x15: 
