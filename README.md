@@ -13,3 +13,14 @@ https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
 ressources
 
 work on setting up make/cmake for portability between OS'
+
+mac:
+brew install sdl2 pkg-config
+
+ubuntu:
+sudo apt update
+sudo apt install build-essential cmake pkg-config libsdl2-dev
+
+cmake -S . -B build
+cmake --build build -j
+./build/main
