@@ -1,17 +1,7 @@
 .DS_Store
 .vscode/
-
 build*/
-cmake-build*/
 *.dSYM/
-
 main
 *.exe
-
 rom/
-
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-compile_commands.json

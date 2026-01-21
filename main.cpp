@@ -104,7 +104,7 @@ int main (int argc, char **argv) {
 
     myChip8.initialize();
 
-    myChip8.loadGame("rom/pong2.ch8");
+    myChip8.loadGame("rom/tetris.ch8");
 
     SDL_Event e; 
     bool quit = false; 
